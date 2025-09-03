@@ -5,13 +5,17 @@ const connectDB = require('./config/db');
 
 dotenv.config();
 const app = express();
+
 app.use(cors());
+
 app.use(express.json());
 
 connectDB();
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/home', require('./routes/home'));
+app.use('/api/products', require('./routes/products'));
+app.use('/api/categories', require('./routes/categories'));
 
 app.get('/', (req, res) => res.send('Fullstack demo backend is running'));
 

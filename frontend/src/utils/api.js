@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000'
+  baseURL: 'http://localhost:5000/api'
 });
 
 api.interceptors.request.use((config) => {
@@ -9,5 +9,19 @@ api.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+// Categories API
+export const categoriesAPI = {
+  getAll: () => api.get('/categories'),
+  getById: (id) => api.get(`/categories/${id}`)
+};
+
+// Products API
+export const productsAPI = {
+  getAll: (params) => api.get('/products', { params }),
+  getByCategory: (categoryId, params) => api.get(`/products/category/${categoryId}`, { params }),
+  getById: (id) => api.get(`/products/${id}`),
+  getFeatured: (params) => api.get('/products/featured', { params })
+};
 
 export default api;

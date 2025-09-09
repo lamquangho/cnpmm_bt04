@@ -8,7 +8,7 @@ export default function Register() {
 
   const onFinish = async (values) => {
     try {
-      await api.post('/api/auth/register', values);
+      await api.post('/auth/register', values);
       message.success('Đăng ký thành công. Mời đăng nhập.');
       navigate('/login');
     } catch (err) {

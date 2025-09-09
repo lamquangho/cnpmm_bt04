@@ -8,7 +8,7 @@ export default function Login() {
 
   const onFinish = async (values) => {
     try {
-      const res = await api.post('/api/auth/login', values);
+      const res = await api.post('/auth/login', values);
       localStorage.setItem('token', res.data.token);
       message.success('Đăng nhập thành công');
       navigate('/home');

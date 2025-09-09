@@ -24,4 +24,12 @@ export const productsAPI = {
   getFeatured: (params) => api.get('/products/featured', { params })
 };
 
+// Search API
+export const searchAPI = {
+  fuzzySearch: (params) => api.get('/search', { params }),
+  getSuggestions: (params) => api.get('/search/suggestions', { params }),
+  getFilterOptions: () => api.get('/search/filters'),
+  incrementView: (productId) => api.post(`/search/view/${productId}`)
+};
+
 export default api;

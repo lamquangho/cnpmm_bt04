@@ -13,15 +13,45 @@ const ProductCard = ({ product, onViewDetail, onAddToCart }) => {
     }).format(price);
   };
 
-  const discountPercent = product.originalPrice 
+  // Calculate total discount from originalPrice
+  const totalDiscountPercent = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
     : 0;
 
+  // Get promotion and discount info
+  const hasActiveDiscount = product.discount?.isActive && product.discount?.percentage > 0;
+  const hasActivePromotion = product.promotion?.isActive && product.promotion?.percentage > 0;
+
+  // Determine which badge to show (promotion takes priority)
+  const getBadgeInfo = () => {
+    if (hasActivePromotion) {
+      return {
+        text: `${product.promotion.label} -${product.promotion.percentage}%`,
+        color: 'red'
+      };
+    }
+    if (hasActiveDiscount) {
+      return {
+        text: `Giảm ${product.discount.percentage}%`,
+        color: 'orange'
+      };
+    }
+    if (totalDiscountPercent > 0) {
+      return {
+        text: `-${totalDiscountPercent}%`,
+        color: 'blue'
+      };
+    }
+    return null;
+  };
+
+  const badgeInfo = getBadgeInfo();
+
   return (
-    <Badge.Ribbon 
-      text={discountPercent > 0 ? `-${discountPercent}%` : ''} 
-      color="red"
-      style={{ display: discountPercent > 0 ? 'block' : 'none' }}
+    <Badge.Ribbon
+      text={badgeInfo?.text || ''}
+      color={badgeInfo?.color || 'red'}
+      style={{ display: badgeInfo ? 'block' : 'none' }}
     >
       <Card
         hoverable
@@ -31,9 +61,9 @@ const ProductCard = ({ product, onViewDetail, onAddToCart }) => {
             <img
               alt={product.name}
               src={product.images?.[0] || 'https://via.placeholder.com/200x200'}
-              style={{ 
-                width: '100%', 
-                height: '100%', 
+              style={{
+                width: '100%',
+                height: '100%',
                 objectFit: 'cover',
                 transition: 'transform 0.3s ease'
               }}
@@ -65,16 +95,16 @@ const ProductCard = ({ product, onViewDetail, onAddToCart }) => {
           </div>
         }
         actions={[
-          <Button 
-            type="text" 
-            icon={<EyeOutlined />} 
+          <Button
+            type="text"
+            icon={<EyeOutlined />}
             onClick={() => onViewDetail?.(product)}
           >
             Xem chi tiết
           </Button>,
-          <Button 
-            type="text" 
-            icon={<ShoppingCartOutlined />} 
+          <Button
+            type="text"
+            icon={<ShoppingCartOutlined />}
             onClick={() => onAddToCart?.(product)}
             disabled={product.stock === 0}
           >
@@ -97,43 +127,62 @@ const ProductCard = ({ product, onViewDetail, onAddToCart }) => {
                   {product.description}
                 </Text>
               </div>
-              
+
               <div style={{ marginBottom: 8 }}>
                 <Rate disabled defaultValue={product.ratings?.average || 0} size="small" />
                 <Text type="secondary" style={{ marginLeft: 8, fontSize: '12px' }}>
                   ({product.ratings?.count || 0})
                 </Text>
               </div>
-              
+
               <div style={{ marginBottom: 8 }}>
                 <Text strong style={{ color: '#ff4d4f', fontSize: '16px' }}>
                   {formatPrice(product.price)}
                 </Text>
                 {product.originalPrice && product.originalPrice > product.price && (
-                  <Text 
-                    delete 
-                    type="secondary" 
+                  <Text
+                    delete
+                    type="secondary"
                     style={{ marginLeft: 8, fontSize: '14px' }}
                   >
                     {formatPrice(product.originalPrice)}
                   </Text>
                 )}
               </div>
-              
-              <div>
-                <Text type="secondary" style={{ fontSize: '12px' }}>
-                  Còn lại: {product.stock}
-                </Text>
-                {product.featured && (
-                  <Badge 
-                    count="HOT" 
-                    style={{ 
-                      backgroundColor: '#52c41a', 
-                      marginLeft: 8,
-                      fontSize: '10px'
-                    }} 
-                  />
-                )}
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <Text type="secondary" style={{ fontSize: '12px' }}>
+                    Còn lại: {product.stock}
+                  </Text>
+                  {product.views > 0 && (
+                    <Text type="secondary" style={{ fontSize: '10px', marginLeft: 8 }}>
+                      👁 {product.views} lượt xem
+                    </Text>
+                  )}
+                </div>
+
+                <div>
+                  {product.featured && (
+                    <Badge
+                      count="HOT"
+                      style={{
+                        backgroundColor: '#ff4d4f',
+                        fontSize: '10px'
+                      }}
+                    />
+                  )}
+                  {hasActivePromotion && (
+                    <Badge
+                      count={product.promotion.type?.toUpperCase()}
+                      style={{
+                        backgroundColor: '#52c41a',
+                        fontSize: '8px',
+                        marginLeft: 4
+                      }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           }

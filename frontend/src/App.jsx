@@ -1,13 +1,15 @@
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import { HomeOutlined, AppstoreOutlined, ShoppingOutlined, UserOutlined, LoginOutlined } from '@ant-design/icons';
+import { HomeOutlined, AppstoreOutlined, ShoppingOutlined, UserOutlined, LoginOutlined, SearchOutlined } from '@ant-design/icons';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import Categories from './pages/Categories';
 import CategoryProducts from './pages/CategoryProducts';
 import Products from './pages/Products';
+import SearchResults from './pages/SearchResults';
+import RegisterTest from './pages/RegisterTest';
 import SimpleTest from './SimpleTest';
 
 
@@ -44,17 +46,22 @@ export default function App() {
             },
             {
               key: '4',
+              icon: <SearchOutlined />,
+              label: <Link to="/search">Tìm kiếm</Link>
+            },
+            {
+              key: '5',
               icon: <LoginOutlined />,
               label: <Link to="/login">Đăng nhập</Link>
             },
             {
-              key: '5',
+              key: '6',
               icon: <UserOutlined />,
               label: <Link to="/register">Đăng ký</Link>
             },
             {
-              key: '6',
-              label: <Link to="/test">🔧 Test</Link>
+              key: '7',
+              label: <Link to="/test-register">🧪 Test Register</Link>
             },
 
           ]}
@@ -70,7 +77,8 @@ export default function App() {
             <Route path="/categories" element={<Categories />} />
             <Route path="/categories/:categoryId" element={<CategoryProducts />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/test" element={<SimpleTest />} />
+            <Route path="/search" element={<SearchResults />} />
+            <Route path="/test-register" element={<RegisterTest />} />
 
           </Routes>
         </div>

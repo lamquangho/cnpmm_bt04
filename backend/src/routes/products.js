@@ -4,7 +4,10 @@ const {
   getProducts,
   getProductsByCategory,
   getProductById,
-  getFeaturedProducts
+  getFeaturedProducts,
+  getSimilarProducts,
+  getProductStats,
+  getProductsByType
 } = require('../controllers/productController');
 
 // @route   GET /api/products
@@ -22,9 +25,24 @@ router.get('/featured', getFeaturedProducts);
 // @access  Public
 router.get('/category/:categoryId', getProductsByCategory);
 
+// @route   GET /api/products/type/:type
+// @desc    Lấy sản phẩm theo loại (bestseller, most-viewed, most-favorite)
+// @access  Public
+router.get('/type/:type', getProductsByType);
+
 // @route   GET /api/products/:id
 // @desc    Lấy chi tiết sản phẩm
 // @access  Public
 router.get('/:id', getProductById);
+
+// @route   GET /api/products/:id/similar
+// @desc    Lấy sản phẩm tương tự
+// @access  Public
+router.get('/:id/similar', getSimilarProducts);
+
+// @route   GET /api/products/:id/stats
+// @desc    Lấy thống kê sản phẩm (số khách mua, bình luận)
+// @access  Public
+router.get('/:id/stats', getProductStats);
 
 module.exports = router;

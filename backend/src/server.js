@@ -21,6 +21,9 @@ app.use('/api/home', require('./routes/home'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/search', require('./routes/search'));
+app.use('/api/favorites', require('./routes/favorites'));
+app.use('/api/view-history', require('./routes/viewHistory'));
+app.use('/api/comments', require('./routes/comments'));
 
 app.get('/', (req, res) => res.send('Fullstack demo backend is running'));
 

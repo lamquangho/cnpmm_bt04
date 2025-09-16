@@ -225,16 +225,16 @@ class ElasticsearchService {
         // Fuzzy search cho text
         if (query) {
             searchQuery.body.query.bool.should.push(
-                {
+                {   //FUZZY SEARCH ALGORITHM (Thuật toán tìm kiếm mờ)
                     multi_match: {
                         query: query,
                         fields: ['name^3', 'description^2', 'searchKeywords^2', 'brand', 'tags'],
-                        fuzziness: 'AUTO',
+                        fuzziness: 'AUTO', //Tự động tính toán độ lệch cho phép (0-2 ký tự)
                         operator: 'or',
                         boost: 2
                     }
                 },
-                {
+                {   //Tìm kiếm cụm từ tiền tố Ví dụ: "Samsung Galaxy" sẽ tìm thấy "Samsung Galaxy S21", "Samsung Galaxy Note"
                     match_phrase_prefix: {
                         name: {
                             query: query,
@@ -243,9 +243,9 @@ class ElasticsearchService {
                     }
                 },
                 {
-                    wildcard: {
+                    wildcard: { //(Tìm kiếm ký tự đại diện Ví dụ: "phone" sẽ tìm thấy "iPhone", "telephone", "headphone"
                         'name.keyword': {
-                            value: `*${query.toLowerCase()}*`,
+                            value: `*${query.toLowerCase()}*`, //* để match bất kỳ ký tự nào
                             boost: 1.5
                         }
                     }
@@ -263,7 +263,7 @@ class ElasticsearchService {
 
         // Filter theo giá
         searchQuery.body.query.bool.filter.push({
-            range: {
+            range: { //Range Query (Truy vấn khoảng)
                 price: {
                     gte: minPrice,
                     lte: maxPrice
@@ -272,7 +272,7 @@ class ElasticsearchService {
         });
 
         // Filter theo brand
-        if (brand) {
+        if (brand) { //Term Query (Truy vấn từ khóa chính xác)
             searchQuery.body.query.bool.filter.push({
                 term: { 'brand.keyword': brand }
             });

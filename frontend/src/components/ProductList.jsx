@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Row, Col, Spin, Alert, Pagination, Switch, Typography, Select, Input, Card } from 'antd';
+import { Row, Col, Spin, Alert, Pagination, Switch, Typography, Select, Input, Card, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import { productsAPI } from '../utils/api';
+import { useCart } from '@lamquangho/shopping-cart-library';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const ProductList = ({ categoryId, title }) => {
+  const { addItem } = useCart();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,7 +22,7 @@ const ProductList = ({ categoryId, title }) => {
     itemsPerPage: 12,
     hasNextPage: false
   });
-  
+
   // UI controls
   const [useInfiniteScroll, setUseInfiniteScroll] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -132,13 +136,27 @@ const ProductList = ({ categoryId, title }) => {
   };
 
   const handleViewDetail = (product) => {
-    console.log('Xem chi tiết sản phẩm:', product);
-    // TODO: Navigate to product detail page
+    navigate(`/products/${product._id}`);
   };
 
   const handleAddToCart = (product) => {
-    console.log('Thêm vào giỏ hàng:', product);
-    // TODO: Add to cart functionality
+    try {
+      // Transform product data to match cart item interface
+      const cartItem = {
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/200x150?text=No+Image',
+        description: product.description,
+        category: product.category?.name || 'Uncategorized'
+      };
+
+      addItem(cartItem);
+      message.success(`Đã thêm "${product.name}" vào giỏ hàng!`);
+    } catch (error) {
+      console.error('Lỗi khi thêm vào giỏ hàng:', error);
+      message.error('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng');
+    }
   };
 
   const displayProducts = useInfiniteScroll ? allProducts : products;

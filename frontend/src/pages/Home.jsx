@@ -3,6 +3,7 @@ import { Card, Typography, Alert, Button, Row, Col, Divider } from 'antd';
 import { AppstoreOutlined, ShoppingOutlined, FireOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import FeatureDemo from '../components/FeatureDemo';
 import { productsAPI, categoriesAPI } from '../utils/api';
 import api from '../utils/api';
 
@@ -23,7 +24,7 @@ const Home = () => {
   const fetchInitialData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch user if token exists
       const token = localStorage.getItem('token');
       if (token) {
@@ -58,8 +59,7 @@ const Home = () => {
   };
 
   const handleViewDetail = (product) => {
-    console.log('Xem chi tiết sản phẩm:', product);
-    // TODO: Navigate to product detail page
+    navigate(`/products/${product._id}`);
   };
 
   const handleAddToCart = (product) => {
@@ -67,11 +67,31 @@ const Home = () => {
     // TODO: Add to cart functionality
   };
 
+  //  const handleAddToCart = (product) => {
+  //   try {
+  //     // Transform product data to match cart item interface
+  //     const cartItem = {
+  //       id: product._id,
+  //       name: product.name,
+  //       price: product.price,
+  //       image: product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/200x150?text=No+Image',
+  //       description: product.description,
+  //       category: product.category?.name || 'Uncategorized'
+  //     };
+
+  //     addItem(cartItem);
+  //     message.success(`Đã thêm "${product.name}" vào giỏ hàng!`);
+  //   } catch (error) {
+  //     console.error('Lỗi khi thêm vào giỏ hàng:', error);
+  //     message.error('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng');
+  //   }
+  // };
+
   return (
     <div>
       {/* Hero Section */}
-      <Card 
-        style={{ 
+      <Card
+        style={{
           marginBottom: 32,
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white',
@@ -86,7 +106,7 @@ const Home = () => {
         <Paragraph style={{ color: 'rgba(255,255,255,0.9)', fontSize: 18, marginBottom: 32 }}>
           Khám phá hàng ngàn sản phẩm chất lượng với giá cả hợp lý
         </Paragraph>
-        
+
         {user ? (
           <div>
             <Text style={{ color: 'white', fontSize: 16 }}>
@@ -103,15 +123,15 @@ const Home = () => {
           </div>
         ) : (
           <div>
-            <Button 
-              type="primary" 
-              size="large" 
+            <Button
+              type="primary"
+              size="large"
               style={{ marginRight: 16 }}
               onClick={() => navigate('/login')}
             >
               Đăng nhập
             </Button>
-            <Button 
+            <Button
               size="large"
               onClick={() => navigate('/register')}
             >
@@ -124,7 +144,7 @@ const Home = () => {
       {/* Quick Actions */}
       <Row gutter={24} style={{ marginBottom: 40 }}>
         <Col xs={24} md={12}>
-          <Card 
+          <Card
             hoverable
             onClick={() => navigate('/categories')}
             style={{ height: 120, cursor: 'pointer' }}
@@ -138,7 +158,7 @@ const Home = () => {
           </Card>
         </Col>
         <Col xs={24} md={12}>
-          <Card 
+          <Card
             hoverable
             onClick={() => navigate('/products')}
             style={{ height: 120, cursor: 'pointer' }}
@@ -184,8 +204,8 @@ const Home = () => {
           </Row>
 
           <div style={{ textAlign: 'center', marginTop: 32 }}>
-            <Button 
-              type="primary" 
+            <Button
+              type="primary"
               size="large"
               onClick={() => navigate('/products')}
             >
@@ -203,6 +223,9 @@ const Home = () => {
           style={{ marginTop: 16 }}
         />
       )}
+
+      {/* Feature Demo */}
+      <FeatureDemo />
     </div>
   );
 };

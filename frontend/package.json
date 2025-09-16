@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
+    "@lamquangho/shopping-cart-library": "^1.0.0",
     "antd": "^5.8.0",
     "axios": "^1.4.0",
     "lodash": "^4.17.21",

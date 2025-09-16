@@ -1,11 +1,32 @@
 import React from 'react';
 import { Card, Button, Rate, Typography, Badge } from 'antd';
 import { ShoppingCartOutlined, EyeOutlined } from '@ant-design/icons';
+import FavoriteButtonAntD from './FavoriteButtonAntD';
+import ViewedIndicator from './ViewedIndicator';
+import { useViewTracker } from '../hooks/useViewTracker';
+import { viewHistoryAPI } from '../utils/api';
 
 const { Meta } = Card;
 const { Text } = Typography;
 
-const ProductCard = ({ product, onViewDetail, onAddToCart }) => {
+const ProductCard = ({ product, onViewDetail, onAddToCart, onFavoriteChange }) => {
+  // Auto-track view when product card is visible
+  const { attachRef, manualTrack } = useViewTracker(product._id, {
+    delay: 3000, // Track after 3 seconds of viewing
+    threshold: 0.7 // 70% of card must be visible
+  });
+
+  const handleViewDetail = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Manual track view when clicking view detail
+    manualTrack();
+
+    if (onViewDetail) {
+      onViewDetail(product);
+    }
+  };
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -54,6 +75,7 @@ const ProductCard = ({ product, onViewDetail, onAddToCart }) => {
       style={{ display: badgeInfo ? 'block' : 'none' }}
     >
       <Card
+        ref={attachRef}
         hoverable
         style={{ width: '100%', marginBottom: 16 }}
         cover={
@@ -74,6 +96,26 @@ const ProductCard = ({ product, onViewDetail, onAddToCart }) => {
                 e.target.style.transform = 'scale(1)';
               }}
             />
+            {/* Viewed Indicator */}
+            <ViewedIndicator productId={product._id} />
+
+            {/* Favorite Button */}
+            <div style={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              zIndex: 10,
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              borderRadius: '50%',
+              padding: '2px'
+            }}>
+              <FavoriteButtonAntD
+                productId={product._id}
+                size="small"
+                onFavoriteChange={onFavoriteChange}
+                style={{ fontSize: '16px' }}
+              />
+            </div>
             {product.stock === 0 && (
               <div style={{
                 position: 'absolute',
@@ -98,7 +140,7 @@ const ProductCard = ({ product, onViewDetail, onAddToCart }) => {
           <Button
             type="text"
             icon={<EyeOutlined />}
-            onClick={() => onViewDetail?.(product)}
+            onClick={handleViewDetail}
           >
             Xem chi tiết
           </Button>,
